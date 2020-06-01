@@ -1,49 +1,53 @@
 package me.hsgamer.bettergui.advancedcooldown;
 
+import java.io.File;
+import me.hsgamer.bettergui.builder.RequirementBuilder;
+import me.hsgamer.bettergui.config.ConfigPath;
 import me.hsgamer.bettergui.object.addon.Addon;
 
 public final class Main extends Addon {
 
-  /**
-   * Called when loading the addon
-   *
-   * @return whether the addon is loaded properly
-   */
+  public static final ConfigPath<String> COOLDOWN_NOT_FOUND = new ConfigPath<>(String.class,
+      "cooldown-not-found", "&cCan't find the cooldown with the name '{input}'");
+  private static Manager manager;
+  private static File cooldownDataFolder;
+
+  public static Manager getManager() {
+    return manager;
+  }
+
+  public static File getCooldownDataFolder() {
+    return cooldownDataFolder;
+  }
+
   @Override
   public boolean onLoad() {
+    COOLDOWN_NOT_FOUND.setConfig(getPlugin().getMessageConfig());
+    getPlugin().getMessageConfig().saveConfig();
+
+    setupConfig();
+    cooldownDataFolder = new File(getDataFolder(), "data");
+    if (!cooldownDataFolder.exists()) {
+      cooldownDataFolder.mkdirs();
+    }
     return true;
   }
 
-  /**
-   * Called when enabling the addon
-   */
   @Override
   public void onEnable() {
-    // Enable logic
+    manager = new Manager(this);
+    manager.loadData();
+
+    RequirementBuilder.register("advanced-cooldown", AdvancedCooldownRequirement.class);
   }
 
-  /**
-   * Called after all addons were loaded
-   */
-  @Override
-  public void onPostEnable() {
-    // Post Enable logic
-  }
-
-  /**
-   * Called when disabling the addon
-   */
   @Override
   public void onDisable() {
-    // Disable logic
+    manager.saveData();
   }
 
-
-  /**
-   * Called when reloading
-   */
   @Override
   public void onReload() {
-    // Reload logic
+    manager.reloadData();
   }
 }
