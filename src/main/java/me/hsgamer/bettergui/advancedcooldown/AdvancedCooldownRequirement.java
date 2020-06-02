@@ -3,6 +3,7 @@ package me.hsgamer.bettergui.advancedcooldown;
 import me.hsgamer.bettergui.object.LocalVariable;
 import me.hsgamer.bettergui.object.LocalVariableManager;
 import me.hsgamer.bettergui.object.Requirement;
+import org.apache.commons.lang.time.DurationFormatUtils;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
@@ -44,26 +45,23 @@ public class AdvancedCooldownRequirement extends Requirement<String, String> imp
         .getCooldown(getVariableManager().setVariables(value, offlinePlayer),
             offlinePlayer.getUniqueId());
     millis = millis > 0 ? millis : 0;
-    int divide;
+
+    if (s.toLowerCase().startsWith("_format")) {
+      return DurationFormatUtils.formatDuration(millis, s.substring(8));
+    }
 
     switch (s.toLowerCase()) {
       case "_s":
       case "_seconds":
-        divide = 1000;
-        break;
+        return String.valueOf(millis / 1000);
       case "_m":
       case "_minutes":
-        divide = 60000;
-        break;
+        return String.valueOf(millis / 60000);
       case "_h":
       case "_hours":
-        divide = 3600000;
-        break;
+        return String.valueOf(millis / 3600000);
       default:
-        divide = 1;
-        break;
+        return String.valueOf(millis);
     }
-
-    return String.valueOf(millis / divide);
   }
 }

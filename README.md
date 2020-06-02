@@ -20,6 +20,8 @@ cooldown-999: 999
   * `advanced_cooldown_s` or `advanced_cooldown_seconds`
   * `advanced_cooldown_m` or `advanced_cooldown_minutes`
   * `advanced_cooldown_h` or `advanced_cooldown_hours`
+  * `advanced_cooldown_format_<time-format>`
+    * Example: `advanced_cooldown_format_HH:mm:ss`
 * **Examples**
 ```yaml
 advanced-cooldown: "simple-cooldown" # from config.yml
@@ -51,3 +53,17 @@ advanced-cooldown:
       fail-command:
       - "tell: &cYou need to wait {middle_test_advanced_cooldown_s} seconds"
 ```
+## Time Format
+| character | duration element |
+| --- | --- |
+| y | years |
+| M | months |
+| d | days |
+| H | hours |
+| m | minutes |
+| s | seconds |
+| S | milliseconds |
+* Example:
+  * `HH:mm:ss`: show hours, minutes and seconds
+  * `YY:MM:dd HH:mm:ss`: show years, months, days, hours, minutes and seconds
+
