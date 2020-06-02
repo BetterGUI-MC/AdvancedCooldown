@@ -37,6 +37,7 @@ public class Manager {
   public void reloadData() {
     saveData();
     cooldownMap.clear();
+    main.reloadConfig();
     loadData();
   }
 
