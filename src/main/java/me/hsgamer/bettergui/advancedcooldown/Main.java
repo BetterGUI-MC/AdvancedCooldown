@@ -26,6 +26,9 @@ public final class Main extends Addon {
     getPlugin().getMessageConfig().saveConfig();
 
     setupConfig();
+    getConfig().options().header("Format: \n<name>: <value>\n\nExample:\nsimple-cooldown: 100");
+    getConfig().options().copyHeader(true);
+    saveConfig();
     cooldownDataFolder = new File(getDataFolder(), "data");
     if (!cooldownDataFolder.exists()) {
       cooldownDataFolder.mkdirs();

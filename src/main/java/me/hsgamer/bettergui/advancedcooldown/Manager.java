@@ -23,7 +23,7 @@ public class Manager {
     FileConfiguration configuration = main.getConfig();
     configuration.getValues(false).forEach((key, value) -> {
       PluginConfig dataConfig = new PluginConfig(main.getPlugin(),
-          new File(Main.getCooldownDataFolder(), key));
+          new File(Main.getCooldownDataFolder(), key + ".yml"));
       Cooldown cooldown = new Cooldown(key, String.valueOf(value), dataConfig);
       cooldown.loadData();
       cooldownMap.put(key, cooldown);
