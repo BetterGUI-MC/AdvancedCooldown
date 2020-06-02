@@ -13,7 +13,7 @@ cooldown-999: 999
 ## Requirement Type
 * **Keyword**: `advanced-cooldown`
 * **Value Type**: `String`
-* **Final Value**: `String`
+* **Final Value**: `String` (name from `config.yml`)
 * **Default Take**: `true` (start the cooldown)
 * **Variable**
   * `advanced_cooldown`
