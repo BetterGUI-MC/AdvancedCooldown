@@ -15,19 +15,19 @@ cooldown-999: 999
 * **Value Type**: `String`
 * **Final Value**: `String` (name from `config.yml`)
 * **Default Take**: `true` (start the cooldown)
-* **Variable**
-  * `advanced_cooldown`
-  * `advanced_cooldown_s` or `advanced_cooldown_seconds`
-  * `advanced_cooldown_m` or `advanced_cooldown_minutes`
-  * `advanced_cooldown_h` or `advanced_cooldown_hours`
-  * `advanced_cooldown_format_<time-format>`
-    * Example: `advanced_cooldown_format_HH:mm:ss`
 * **Examples**
 ```yaml
 advanced-cooldown: "simple-cooldown" # from config.yml
 
 advanced-cooldown: "cooldown-10000" # from config.yml
 ```
+## Variable
+* `advanced_cooldown_<name>`
+* `advanced_cooldown_<name>_s` or `advanced_cooldown_<name>_seconds`
+* `advanced_cooldown_<name>_m` or `advanced_cooldown_<name>_minutes`
+* `advanced_cooldown_<name>_h` or `advanced_cooldown_<name>_hours`
+* `advanced_cooldown_<name>_format_<time-format>`
+  * Example Format: `advanced_cooldown_<name>_format_HH:mm:ss`
 ## Example icon
 ```yaml
 advanced-cooldown:
@@ -41,17 +41,17 @@ advanced-cooldown:
       test:
         advanced-cooldown: "simple-cooldown"
       fail-command:
-      - "tell: &cYou need to wait {left_test_advanced_cooldown_s} seconds"
+      - "tell: &cYou need to wait {advanced_cooldown_simple-cooldown_s} seconds"
     right:
       test:
         advanced-cooldown: "cooldown-10000"
       fail-command:
-      - "tell: &cYou need to wait {right_test_advanced_cooldown_s} seconds"
+      - "tell: &cYou need to wait {advanced_cooldown_cooldown-10000_s} seconds"
     middle:
       test:
         advanced-cooldown: "cooldown-999"
       fail-command:
-      - "tell: &cYou need to wait {middle_test_advanced_cooldown_s} seconds"
+      - "tell: &cYou need to wait {advanced_cooldown_cooldown-999_s} seconds"
 ```
 ## Time Format
 | character | duration element |

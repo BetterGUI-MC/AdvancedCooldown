@@ -8,13 +8,17 @@ import java.util.Map;
 import java.util.UUID;
 import me.hsgamer.bettergui.config.PluginConfig;
 import me.hsgamer.bettergui.config.impl.MessageConfig;
+import me.hsgamer.bettergui.manager.VariableManager;
+import me.hsgamer.bettergui.object.GlobalVariable;
 import me.hsgamer.bettergui.object.LocalVariableManager;
 import me.hsgamer.bettergui.util.CommonUtils;
 import me.hsgamer.bettergui.util.ExpressionUtils;
+import org.apache.commons.lang.time.DurationFormatUtils;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
-public class Cooldown {
+public class Cooldown implements GlobalVariable {
 
   private final Map<UUID, Instant> cooldownMap = new HashMap<>();
   private final String name;
@@ -25,6 +29,8 @@ public class Cooldown {
     this.name = name;
     this.value = value;
     this.dataConfig = dataConfig;
+
+    VariableManager.register("advanced_cooldown_" + name, this);
   }
 
   public void loadData() {
@@ -78,6 +84,30 @@ public class Cooldown {
       return Instant.now().until(cooldownMap.get(uuid), ChronoUnit.MILLIS);
     } else {
       return 0;
+    }
+  }
+
+  @Override
+  public String getReplacement(OfflinePlayer offlinePlayer, String s) {
+    long millis = getCooldown(offlinePlayer.getUniqueId());
+    millis = millis > 0 ? millis : 0;
+
+    if (s.toLowerCase().startsWith("_format")) {
+      return DurationFormatUtils.formatDuration(millis, s.substring(8));
+    }
+
+    switch (s.toLowerCase()) {
+      case "_s":
+      case "_seconds":
+        return String.valueOf(millis / 1000);
+      case "_m":
+      case "_minutes":
+        return String.valueOf(millis / 60000);
+      case "_h":
+      case "_hours":
+        return String.valueOf(millis / 3600000);
+      default:
+        return String.valueOf(millis);
     }
   }
 }
