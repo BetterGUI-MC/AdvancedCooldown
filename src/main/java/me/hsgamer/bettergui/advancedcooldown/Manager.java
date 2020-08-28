@@ -3,10 +3,10 @@ package me.hsgamer.bettergui.advancedcooldown;
 import java.io.File;
 import java.util.Map;
 import java.util.UUID;
-import me.hsgamer.bettergui.config.PluginConfig;
-import me.hsgamer.bettergui.object.LocalVariableManager;
-import me.hsgamer.bettergui.util.CaseInsensitiveStringMap;
-import me.hsgamer.bettergui.util.CommonUtils;
+import me.hsgamer.bettergui.object.variable.LocalVariableManager;
+import me.hsgamer.bettergui.util.MessageUtils;
+import me.hsgamer.bettergui.util.config.PluginConfig;
+import me.hsgamer.bettergui.util.map.CaseInsensitiveStringMap;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
@@ -45,7 +45,7 @@ public class Manager {
     if (cooldownMap.containsKey(cooldownName)) {
       return cooldownMap.get(cooldownName).isInCooldown(player);
     } else {
-      CommonUtils.sendMessage(player, Main.COOLDOWN_NOT_FOUND.getValue());
+      MessageUtils.sendMessage(player, Main.COOLDOWN_NOT_FOUND.getValue());
       return true;
     }
   }
@@ -55,7 +55,7 @@ public class Manager {
     if (cooldownMap.containsKey(cooldownName)) {
       cooldownMap.get(cooldownName).startCooldown(player, localVariableManager);
     } else {
-      CommonUtils.sendMessage(player, Main.COOLDOWN_NOT_FOUND.getValue());
+      MessageUtils.sendMessage(player, Main.COOLDOWN_NOT_FOUND.getValue());
     }
   }
 

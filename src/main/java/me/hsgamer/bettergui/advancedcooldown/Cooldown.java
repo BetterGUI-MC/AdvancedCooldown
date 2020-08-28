@@ -6,13 +6,13 @@ import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-import me.hsgamer.bettergui.config.PluginConfig;
-import me.hsgamer.bettergui.config.impl.MessageConfig;
+import me.hsgamer.bettergui.config.MessageConfig;
 import me.hsgamer.bettergui.manager.VariableManager;
-import me.hsgamer.bettergui.object.GlobalVariable;
-import me.hsgamer.bettergui.object.LocalVariableManager;
-import me.hsgamer.bettergui.util.CommonUtils;
-import me.hsgamer.bettergui.util.ExpressionUtils;
+import me.hsgamer.bettergui.object.variable.GlobalVariable;
+import me.hsgamer.bettergui.object.variable.LocalVariableManager;
+import me.hsgamer.bettergui.util.MessageUtils;
+import me.hsgamer.bettergui.util.config.PluginConfig;
+import me.hsgamer.bettergui.util.expression.ExpressionUtils;
 import org.apache.commons.lang.time.DurationFormatUtils;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -58,7 +58,7 @@ public class Cooldown implements GlobalVariable {
     if (ExpressionUtils.isValidExpression(parsed)) {
       return Duration.ofMillis((long) ExpressionUtils.getResult(parsed).doubleValue() * 1000);
     } else {
-      CommonUtils
+      MessageUtils
           .sendMessage(player, MessageConfig.INVALID_NUMBER.getValue().replace("{input}", parsed));
       return Duration.ZERO;
     }

@@ -1,13 +1,15 @@
 package me.hsgamer.bettergui.advancedcooldown;
 
+import static me.hsgamer.bettergui.BetterGUI.getInstance;
+
 import java.io.File;
 import me.hsgamer.bettergui.builder.RequirementBuilder;
-import me.hsgamer.bettergui.config.ConfigPath;
 import me.hsgamer.bettergui.object.addon.Addon;
+import me.hsgamer.bettergui.util.config.path.StringConfigPath;
 
 public final class Main extends Addon {
 
-  public static final ConfigPath<String> COOLDOWN_NOT_FOUND = new ConfigPath<>(String.class,
+  public static final StringConfigPath COOLDOWN_NOT_FOUND = new StringConfigPath(
       "cooldown-not-found", "&cCan't find the cooldown with the name '{input}'");
   private static Manager manager;
   private static File cooldownDataFolder;
@@ -22,8 +24,8 @@ public final class Main extends Addon {
 
   @Override
   public boolean onLoad() {
-    COOLDOWN_NOT_FOUND.setConfig(getPlugin().getMessageConfig());
-    getPlugin().getMessageConfig().saveConfig();
+    COOLDOWN_NOT_FOUND.setConfig(getInstance().getMessageConfig());
+    getInstance().getMessageConfig().saveConfig();
 
     setupConfig();
     getConfig().options().header("Format: \n<name>: <value>\n\nExample:\nsimple-cooldown: 100");
@@ -41,7 +43,7 @@ public final class Main extends Addon {
     manager = new Manager(this);
     manager.loadData();
 
-    RequirementBuilder.register("advanced-cooldown", AdvancedCooldownRequirement.class);
+    RequirementBuilder.register(AdvancedCooldownRequirement::new, "advanced-cooldown");
   }
 
   @Override
