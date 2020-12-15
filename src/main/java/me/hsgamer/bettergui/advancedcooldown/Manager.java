@@ -1,69 +1,70 @@
 package me.hsgamer.bettergui.advancedcooldown;
 
+import me.hsgamer.bettergui.lib.core.bukkit.config.PluginConfig;
+import me.hsgamer.bettergui.lib.core.bukkit.utils.MessageUtils;
+import me.hsgamer.bettergui.lib.core.collections.map.CaseInsensitiveStringHashMap;
+import me.hsgamer.bettergui.lib.simpleyaml.configuration.file.FileConfiguration;
+import org.bukkit.Bukkit;
+
 import java.io.File;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
-import me.hsgamer.bettergui.object.variable.LocalVariableManager;
-import me.hsgamer.bettergui.util.MessageUtils;
-import me.hsgamer.bettergui.util.config.PluginConfig;
-import me.hsgamer.bettergui.util.map.CaseInsensitiveStringMap;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.entity.Player;
 
 public class Manager {
+    private static final Map<String, Cooldown> cooldownMap = new CaseInsensitiveStringHashMap<>();
+    private static FileConfiguration config;
+    private static File folder;
 
-  private final Map<String, Cooldown> cooldownMap = new CaseInsensitiveStringMap<>();
-  private final Main main;
-
-  public Manager(Main main) {
-    this.main = main;
-  }
-
-  public void loadData() {
-    FileConfiguration configuration = main.getConfig();
-    configuration.getValues(false).forEach((key, value) -> {
-      PluginConfig dataConfig = new PluginConfig(main.getPlugin(),
-          new File(Main.getCooldownDataFolder(), key + ".yml"));
-      Cooldown cooldown = new Cooldown(key, String.valueOf(value), dataConfig);
-      cooldown.loadData();
-      cooldownMap.put(key, cooldown);
-    });
-  }
-
-  public void saveData() {
-    cooldownMap.values().forEach(Cooldown::saveData);
-  }
-
-  public void reloadData() {
-    saveData();
-    cooldownMap.clear();
-    main.reloadConfig();
-    loadData();
-  }
-
-  public boolean isInCooldown(String cooldownName, Player player) {
-    if (cooldownMap.containsKey(cooldownName)) {
-      return cooldownMap.get(cooldownName).isInCooldown(player);
-    } else {
-      MessageUtils.sendMessage(player, Main.COOLDOWN_NOT_FOUND.getValue());
-      return true;
+    private Manager() {
+        // EMPTY
     }
-  }
 
-  public void startCooldown(String cooldownName, Player player,
-      LocalVariableManager<?> localVariableManager) {
-    if (cooldownMap.containsKey(cooldownName)) {
-      cooldownMap.get(cooldownName).startCooldown(player, localVariableManager);
-    } else {
-      MessageUtils.sendMessage(player, Main.COOLDOWN_NOT_FOUND.getValue());
+    public static void setConfig(FileConfiguration config) {
+        Manager.config = config;
     }
-  }
 
-  public long getCooldown(String cooldownName, UUID uuid) {
-    if (cooldownMap.containsKey(cooldownName)) {
-      return cooldownMap.get(cooldownName).getCooldown(uuid);
-    } else {
-      return 0;
+    public static void setFolder(File folder) {
+        Manager.folder = folder;
     }
-  }
+
+    public static void loadData() {
+        config.getValues(false).forEach((key, value) -> {
+            PluginConfig dataConfig = new PluginConfig(new File(folder, key + ".yml"));
+            Cooldown cooldown = new Cooldown(key, String.valueOf(value), dataConfig);
+            cooldown.loadData();
+            cooldownMap.put(key, cooldown);
+        });
+    }
+
+    public static void saveData() {
+        cooldownMap.values().forEach(Cooldown::saveData);
+    }
+
+    public static void clearData() {
+        cooldownMap.clear();
+    }
+
+    public static boolean isInCooldown(String cooldownName, UUID uuid) {
+        return Optional.ofNullable(cooldownMap.get(cooldownName))
+                .map(cooldown -> cooldown.isInCooldown(uuid))
+                .orElseGet(() -> {
+                    Optional.ofNullable(Bukkit.getPlayer(uuid)).ifPresent(player -> MessageUtils.sendMessage(player, Main.COOLDOWN_NOT_FOUND.getValue()));
+                    return true;
+                });
+    }
+
+    public static void startCooldown(String cooldownName, UUID uuid) {
+        if (cooldownMap.containsKey(cooldownName)) {
+            cooldownMap.get(cooldownName).startCooldown(uuid);
+        } else {
+            Optional.ofNullable(Bukkit.getPlayer(uuid)).ifPresent(player -> MessageUtils.sendMessage(player, Main.COOLDOWN_NOT_FOUND.getValue()));
+        }
+    }
+
+    public static long getCooldown(String cooldownName, UUID uuid) {
+        return Optional.ofNullable(cooldownMap.get(cooldownName))
+                .map(cooldown -> cooldown.getCooldown(uuid))
+                .orElse(0L);
+    }
 }

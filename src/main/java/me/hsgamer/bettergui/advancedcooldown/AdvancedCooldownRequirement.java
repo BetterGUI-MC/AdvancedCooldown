@@ -1,26 +1,27 @@
 package me.hsgamer.bettergui.advancedcooldown;
 
-import me.hsgamer.bettergui.object.Requirement;
-import org.bukkit.entity.Player;
+import me.hsgamer.bettergui.api.requirement.BaseRequirement;
+import me.hsgamer.bettergui.lib.core.variable.VariableManager;
 
-public class AdvancedCooldownRequirement extends Requirement<String, String> {
+import java.util.UUID;
 
-  public AdvancedCooldownRequirement() {
-    super(true);
-  }
+public class AdvancedCooldownRequirement extends BaseRequirement<String> {
+    public AdvancedCooldownRequirement(String name) {
+        super(name);
+    }
 
-  @Override
-  public String getParsedValue(Player player) {
-    return parseFromString(value, player);
-  }
+    @Override
+    public String getParsedValue(UUID uuid) {
+        return VariableManager.setVariables(String.valueOf(value), uuid);
+    }
 
-  @Override
-  public boolean check(Player player) {
-    return !Main.getManager().isInCooldown(getParsedValue(player), player);
-  }
+    @Override
+    public boolean check(UUID uuid) {
+        return !Manager.isInCooldown(getParsedValue(uuid), uuid);
+    }
 
-  @Override
-  public void take(Player player) {
-    Main.getManager().startCooldown(getParsedValue(player), player, getVariableManager());
-  }
+    @Override
+    public void take(UUID uuid) {
+        Manager.startCooldown(getParsedValue(uuid), uuid);
+    }
 }
