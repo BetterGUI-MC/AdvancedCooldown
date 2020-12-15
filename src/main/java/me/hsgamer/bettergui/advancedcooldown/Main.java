@@ -28,7 +28,7 @@ public final class Main extends BetterGUIAddon {
         }
 
         Manager.setFolder(cooldownDataFolder);
-        Manager.setConfig(getConfig());
+        Manager.setConfig(getAddonConfig());
         return true;
     }
 

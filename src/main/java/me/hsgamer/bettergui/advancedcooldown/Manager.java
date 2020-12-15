@@ -3,7 +3,7 @@ package me.hsgamer.bettergui.advancedcooldown;
 import me.hsgamer.bettergui.lib.core.bukkit.config.PluginConfig;
 import me.hsgamer.bettergui.lib.core.bukkit.utils.MessageUtils;
 import me.hsgamer.bettergui.lib.core.collections.map.CaseInsensitiveStringHashMap;
-import me.hsgamer.bettergui.lib.simpleyaml.configuration.file.FileConfiguration;
+import me.hsgamer.bettergui.lib.core.config.Config;
 import org.bukkit.Bukkit;
 
 import java.io.File;
@@ -13,14 +13,14 @@ import java.util.UUID;
 
 public class Manager {
     private static final Map<String, Cooldown> cooldownMap = new CaseInsensitiveStringHashMap<>();
-    private static FileConfiguration config;
+    private static Config config;
     private static File folder;
 
     private Manager() {
         // EMPTY
     }
 
-    public static void setConfig(FileConfiguration config) {
+    public static void setConfig(Config config) {
         Manager.config = config;
     }
 
@@ -29,7 +29,7 @@ public class Manager {
     }
 
     public static void loadData() {
-        config.getValues(false).forEach((key, value) -> {
+        config.getConfig().getValues(false).forEach((key, value) -> {
             PluginConfig dataConfig = new PluginConfig(new File(folder, key + ".yml"));
             Cooldown cooldown = new Cooldown(key, String.valueOf(value), dataConfig);
             cooldown.loadData();
