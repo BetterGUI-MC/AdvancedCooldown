@@ -6,7 +6,6 @@ import me.hsgamer.bettergui.lib.core.bukkit.utils.MessageUtils;
 import me.hsgamer.bettergui.lib.core.expression.ExpressionUtils;
 import me.hsgamer.bettergui.lib.core.variable.VariableManager;
 import me.hsgamer.bettergui.lib.simpleyaml.configuration.file.FileConfiguration;
-import me.hsgamer.bettergui.manager.PluginVariableManager;
 import org.apache.commons.lang.time.DurationFormatUtils;
 import org.bukkit.Bukkit;
 
@@ -28,7 +27,7 @@ public class Cooldown {
         this.value = value;
         this.dataConfig = dataConfig;
 
-        PluginVariableManager.register("advanced_cooldown_" + name, (original, uuid) -> {
+        CooldownVariableManager.register("advanced_cooldown_" + name, (original, uuid) -> {
             long millis = getCooldown(uuid);
             millis = millis > 0 ? millis : 0;
 

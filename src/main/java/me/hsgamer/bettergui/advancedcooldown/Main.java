@@ -40,12 +40,14 @@ public final class Main extends BetterGUIAddon {
 
     @Override
     public void onDisable() {
+        CooldownVariableManager.unregisterAll();
         Manager.saveData();
         Manager.clearData();
     }
 
     @Override
     public void onReload() {
+        CooldownVariableManager.unregisterAll();
         Manager.saveData();
         Manager.clearData();
         reloadConfig();
