@@ -1,11 +1,10 @@
 package me.hsgamer.bettergui.advancedcooldown;
 
 import me.hsgamer.bettergui.config.MessageConfig;
-import me.hsgamer.bettergui.lib.core.bukkit.config.PluginConfig;
 import me.hsgamer.bettergui.lib.core.bukkit.utils.MessageUtils;
+import me.hsgamer.bettergui.lib.core.config.Config;
 import me.hsgamer.bettergui.lib.core.expression.ExpressionUtils;
 import me.hsgamer.bettergui.lib.core.variable.VariableManager;
-import me.hsgamer.bettergui.lib.simpleyaml.configuration.file.FileConfiguration;
 import org.apache.commons.lang.time.DurationFormatUtils;
 import org.bukkit.Bukkit;
 
@@ -21,9 +20,9 @@ import java.util.concurrent.ConcurrentHashMap;
 public class Cooldown {
     private final Map<UUID, Instant> cooldownMap = new ConcurrentHashMap<>();
     private final String value;
-    private final PluginConfig dataConfig;
+    private final Config dataConfig;
 
-    public Cooldown(String name, String value, PluginConfig dataConfig) {
+    public Cooldown(String name, String value, Config dataConfig) {
         this.value = value;
         this.dataConfig = dataConfig;
 
@@ -52,7 +51,7 @@ public class Cooldown {
     }
 
     public void loadData() {
-        dataConfig.getConfig().getValues(false).forEach((key, o) -> {
+        dataConfig.getNormalizedValues(false).forEach((key, o) -> {
             Instant instant = Instant.parse(String.valueOf(o));
             if (instant.isAfter(Instant.now())) {
                 cooldownMap.put(UUID.fromString(key), instant);
@@ -61,14 +60,13 @@ public class Cooldown {
     }
 
     public void saveData() {
-        FileConfiguration file = dataConfig.getConfig();
-        file.getKeys(false).forEach(key -> file.set(key, null));
+        dataConfig.getKeys(false).forEach(dataConfig::remove);
         cooldownMap.forEach((uuid, instant) -> {
             if (getCooldown(uuid) > 0) {
-                file.set(uuid.toString(), instant.toString());
+                dataConfig.set(uuid.toString(), instant.toString());
             }
         });
-        dataConfig.saveConfig();
+        dataConfig.save();
     }
 
     private Duration getParsedDuration(UUID uuid) {

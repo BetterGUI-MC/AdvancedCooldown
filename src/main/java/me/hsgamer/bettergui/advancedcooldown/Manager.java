@@ -1,6 +1,6 @@
 package me.hsgamer.bettergui.advancedcooldown;
 
-import me.hsgamer.bettergui.lib.core.bukkit.config.PluginConfig;
+import me.hsgamer.bettergui.lib.core.bukkit.config.BukkitConfig;
 import me.hsgamer.bettergui.lib.core.bukkit.utils.MessageUtils;
 import me.hsgamer.bettergui.lib.core.collections.map.CaseInsensitiveStringHashMap;
 import me.hsgamer.bettergui.lib.core.config.Config;
@@ -29,8 +29,8 @@ public class Manager {
     }
 
     public static void loadData() {
-        config.getConfig().getValues(false).forEach((key, value) -> {
-            PluginConfig dataConfig = new PluginConfig(new File(folder, key + ".yml"));
+        config.getNormalizedValues(false).forEach((key, value) -> {
+            Config dataConfig = new BukkitConfig(new File(folder, key + ".yml"));
             Cooldown cooldown = new Cooldown(key, String.valueOf(value), dataConfig);
             cooldown.loadData();
             cooldownMap.put(key, cooldown);

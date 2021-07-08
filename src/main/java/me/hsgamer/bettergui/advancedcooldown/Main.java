@@ -15,11 +15,9 @@ public final class Main extends BetterGUIAddon {
     @Override
     public boolean onLoad() {
         COOLDOWN_NOT_FOUND.setConfig(getInstance().getMessageConfig());
-        getInstance().getMessageConfig().saveConfig();
+        getInstance().getMessageConfig().save();
 
         setupConfig();
-        getConfig().options().header("Format: \n<name>: <value>\n\nExample:\nsimple-cooldown: 100");
-        getConfig().options().copyHeader(true);
         saveConfig();
 
         File cooldownDataFolder = new File(getDataFolder(), "data");
@@ -28,7 +26,7 @@ public final class Main extends BetterGUIAddon {
         }
 
         Manager.setFolder(cooldownDataFolder);
-        Manager.setConfig(getAddonConfig());
+        Manager.setConfig(getConfig());
         return true;
     }
 
