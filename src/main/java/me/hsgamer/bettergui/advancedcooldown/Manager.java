@@ -31,6 +31,7 @@ public class Manager {
     public static void loadData() {
         config.getNormalizedValues(false).forEach((key, value) -> {
             Config dataConfig = new BukkitConfig(new File(folder, key + ".yml"));
+            dataConfig.setup();
             Cooldown cooldown = new Cooldown(key, String.valueOf(value), dataConfig);
             cooldown.loadData();
             cooldownMap.put(key, cooldown);
