@@ -1,27 +1,26 @@
 package me.hsgamer.bettergui.advancedcooldown;
 
 import me.hsgamer.bettergui.api.requirement.BaseRequirement;
-import me.hsgamer.bettergui.lib.core.variable.VariableManager;
+import me.hsgamer.bettergui.builder.RequirementBuilder;
+import me.hsgamer.bettergui.util.StringReplacerApplier;
 
 import java.util.UUID;
 
 public class AdvancedCooldownRequirement extends BaseRequirement<String> {
-    public AdvancedCooldownRequirement(String name) {
-        super(name);
+    public AdvancedCooldownRequirement(RequirementBuilder.Input input) {
+        super(input);
     }
 
     @Override
-    public String getParsedValue(UUID uuid) {
-        return VariableManager.setVariables(String.valueOf(value), uuid);
+    protected String convert(Object value, UUID uuid) {
+        return StringReplacerApplier.replace(String.valueOf(value).trim(), uuid, this);
     }
 
     @Override
-    public boolean check(UUID uuid) {
-        return !Manager.isInCooldown(getParsedValue(uuid), uuid);
-    }
-
-    @Override
-    public void take(UUID uuid) {
-        Manager.startCooldown(getParsedValue(uuid), uuid);
+    protected Result checkConverted(UUID uuid, String value) {
+        if (Manager.isInCooldown(value, uuid)) {
+            return Result.fail();
+        }
+        return Result.success(uuid1 -> Manager.startCooldown(value, uuid1));
     }
 }

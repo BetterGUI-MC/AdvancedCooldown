@@ -1,10 +1,10 @@
 package me.hsgamer.bettergui.advancedcooldown;
 
-import me.hsgamer.bettergui.config.MessageConfig;
-import me.hsgamer.bettergui.lib.core.bukkit.utils.MessageUtils;
-import me.hsgamer.bettergui.lib.core.config.Config;
-import me.hsgamer.bettergui.lib.core.expression.ExpressionUtils;
-import me.hsgamer.bettergui.lib.core.variable.VariableManager;
+import me.hsgamer.bettergui.BetterGUI;
+import me.hsgamer.bettergui.util.StringReplacerApplier;
+import me.hsgamer.hscore.bukkit.utils.MessageUtils;
+import me.hsgamer.hscore.common.Validate;
+import me.hsgamer.hscore.config.Config;
 import org.apache.commons.lang.time.DurationFormatUtils;
 import org.bukkit.Bukkit;
 
@@ -70,10 +70,10 @@ public class Cooldown {
     }
 
     private Duration getParsedDuration(UUID uuid) {
-        String parsed = VariableManager.setVariables(value, uuid);
-        return Optional.ofNullable(ExpressionUtils.getResult(parsed)).map(BigDecimal::doubleValue).map(d -> (long) (d * 1000)).map(Duration::ofMillis)
+        String parsed = StringReplacerApplier.replace(value, uuid, true);
+        return Validate.getNumber(parsed).map(BigDecimal::doubleValue).map(d -> (long) (d * 1000)).map(Duration::ofMillis)
                 .orElseGet(() -> {
-                    Optional.ofNullable(Bukkit.getPlayer(uuid)).ifPresent(player -> MessageUtils.sendMessage(player, MessageConfig.INVALID_NUMBER.getValue().replace("{input}", parsed)));
+                    Optional.ofNullable(Bukkit.getPlayer(uuid)).ifPresent(player -> MessageUtils.sendMessage(player, BetterGUI.getInstance().getMessageConfig().invalidNumber.replace("{input}", parsed)));
                     return Duration.ZERO;
                 });
     }

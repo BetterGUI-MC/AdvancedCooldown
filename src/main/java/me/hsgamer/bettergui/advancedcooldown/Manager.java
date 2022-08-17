@@ -1,9 +1,9 @@
 package me.hsgamer.bettergui.advancedcooldown;
 
-import me.hsgamer.bettergui.lib.core.bukkit.config.BukkitConfig;
-import me.hsgamer.bettergui.lib.core.bukkit.utils.MessageUtils;
-import me.hsgamer.bettergui.lib.core.collections.map.CaseInsensitiveStringHashMap;
-import me.hsgamer.bettergui.lib.core.config.Config;
+import me.hsgamer.hscore.bukkit.config.BukkitConfig;
+import me.hsgamer.hscore.bukkit.utils.MessageUtils;
+import me.hsgamer.hscore.collections.map.CaseInsensitiveStringHashMap;
+import me.hsgamer.hscore.config.Config;
 import org.bukkit.Bukkit;
 
 import java.io.File;
@@ -50,7 +50,7 @@ public class Manager {
         return Optional.ofNullable(cooldownMap.get(cooldownName))
                 .map(cooldown -> cooldown.isInCooldown(uuid))
                 .orElseGet(() -> {
-                    Optional.ofNullable(Bukkit.getPlayer(uuid)).ifPresent(player -> MessageUtils.sendMessage(player, Main.COOLDOWN_NOT_FOUND.getValue()));
+                    Optional.ofNullable(Bukkit.getPlayer(uuid)).ifPresent(player -> MessageUtils.sendMessage(player, "Invalid cooldown name: " + cooldownName));
                     return true;
                 });
     }
@@ -59,7 +59,7 @@ public class Manager {
         if (cooldownMap.containsKey(cooldownName)) {
             cooldownMap.get(cooldownName).startCooldown(uuid);
         } else {
-            Optional.ofNullable(Bukkit.getPlayer(uuid)).ifPresent(player -> MessageUtils.sendMessage(player, Main.COOLDOWN_NOT_FOUND.getValue()));
+            Optional.ofNullable(Bukkit.getPlayer(uuid)).ifPresent(player -> MessageUtils.sendMessage(player, "Invalid cooldown name: " + cooldownName));
         }
     }
 
