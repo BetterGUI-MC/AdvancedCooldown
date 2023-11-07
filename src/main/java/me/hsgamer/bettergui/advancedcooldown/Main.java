@@ -1,13 +1,15 @@
 package me.hsgamer.bettergui.advancedcooldown;
 
+import me.hsgamer.bettergui.api.addon.Reloadable;
 import me.hsgamer.bettergui.builder.RequirementBuilder;
-import me.hsgamer.hscore.bukkit.addon.PluginAddon;
 import me.hsgamer.hscore.bukkit.config.BukkitConfig;
 import me.hsgamer.hscore.config.Config;
+import me.hsgamer.hscore.expansion.common.Expansion;
+import me.hsgamer.hscore.expansion.extra.expansion.DataFolder;
 
 import java.io.File;
 
-public final class Main extends PluginAddon {
+public final class Main implements Expansion, DataFolder, Reloadable {
 
     private final Config config = new BukkitConfig(new File(getDataFolder(), "config.yml"));
 
@@ -32,14 +34,12 @@ public final class Main extends PluginAddon {
 
     @Override
     public void onDisable() {
-        CooldownVariableManager.unregisterAll();
         Manager.saveData();
         Manager.clearData();
     }
 
     @Override
     public void onReload() {
-        CooldownVariableManager.unregisterAll();
         Manager.saveData();
         Manager.clearData();
         config.reload();

@@ -4,6 +4,8 @@ import me.hsgamer.hscore.bukkit.config.BukkitConfig;
 import me.hsgamer.hscore.bukkit.utils.MessageUtils;
 import me.hsgamer.hscore.collections.map.CaseInsensitiveStringHashMap;
 import me.hsgamer.hscore.config.Config;
+import me.hsgamer.hscore.config.PathString;
+import me.hsgamer.hscore.variable.VariableBundle;
 import org.bukkit.Bukkit;
 
 import java.io.File;
@@ -13,11 +15,16 @@ import java.util.UUID;
 
 public class Manager {
     private static final Map<String, Cooldown> cooldownMap = new CaseInsensitiveStringHashMap<>();
+    private static final VariableBundle variableBundle = new VariableBundle();
     private static Config config;
     private static File folder;
 
     private Manager() {
         // EMPTY
+    }
+
+    public static VariableBundle getVariableBundle() {
+        return variableBundle;
     }
 
     public static void setConfig(Config config) {
@@ -29,7 +36,8 @@ public class Manager {
     }
 
     public static void loadData() {
-        config.getNormalizedValues(false).forEach((key, value) -> {
+        config.getNormalizedValues(false).forEach((pathString, value) -> {
+            String key = PathString.toPath(pathString);
             Config dataConfig = new BukkitConfig(new File(folder, key + ".yml"));
             dataConfig.setup();
             Cooldown cooldown = new Cooldown(key, String.valueOf(value), dataConfig);
@@ -44,6 +52,7 @@ public class Manager {
 
     public static void clearData() {
         cooldownMap.clear();
+        variableBundle.unregisterAll();
     }
 
     public static boolean isInCooldown(String cooldownName, UUID uuid) {
