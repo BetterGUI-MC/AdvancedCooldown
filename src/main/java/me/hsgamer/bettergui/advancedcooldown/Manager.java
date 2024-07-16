@@ -4,7 +4,6 @@ import me.hsgamer.hscore.bukkit.config.BukkitConfig;
 import me.hsgamer.hscore.bukkit.utils.MessageUtils;
 import me.hsgamer.hscore.collections.map.CaseInsensitiveStringHashMap;
 import me.hsgamer.hscore.config.Config;
-import me.hsgamer.hscore.config.PathString;
 import me.hsgamer.hscore.variable.VariableBundle;
 import org.bukkit.Bukkit;
 
@@ -36,8 +35,8 @@ public class Manager {
     }
 
     public static void loadData() {
-        config.getNormalizedValues(false).forEach((pathString, value) -> {
-            String key = PathString.toPath(pathString);
+        config.getNormalizedValues(false).forEach((path, value) -> {
+            String key = path[0];
             Config dataConfig = new BukkitConfig(new File(folder, key + ".yml"));
             dataConfig.setup();
             Cooldown cooldown = new Cooldown(key, String.valueOf(value), dataConfig);

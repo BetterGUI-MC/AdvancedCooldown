@@ -1,12 +1,12 @@
 package me.hsgamer.bettergui.advancedcooldown;
 
 import me.hsgamer.bettergui.BetterGUI;
+import me.hsgamer.bettergui.config.MessageConfig;
 import me.hsgamer.bettergui.util.StringReplacerApplier;
 import me.hsgamer.hscore.bukkit.utils.MessageUtils;
 import me.hsgamer.hscore.common.StringReplacer;
 import me.hsgamer.hscore.common.Validate;
 import me.hsgamer.hscore.config.Config;
-import me.hsgamer.hscore.config.PathString;
 import org.apache.commons.lang.time.DurationFormatUtils;
 import org.bukkit.Bukkit;
 
@@ -56,7 +56,7 @@ public class Cooldown {
         dataConfig.getNormalizedValues(false).forEach((key, o) -> {
             Instant instant = Instant.parse(String.valueOf(o));
             if (instant.isAfter(Instant.now())) {
-                cooldownMap.put(UUID.fromString(PathString.toPath(key)), instant);
+                cooldownMap.put(UUID.fromString(key[0]), instant);
             }
         });
     }
@@ -65,7 +65,7 @@ public class Cooldown {
         dataConfig.getKeys(false).forEach(dataConfig::remove);
         cooldownMap.forEach((uuid, instant) -> {
             if (getCooldown(uuid) > 0) {
-                dataConfig.set(new PathString(uuid.toString()), instant.toString());
+                dataConfig.set(instant.toString(), uuid.toString());
             }
         });
         dataConfig.save();
@@ -75,7 +75,7 @@ public class Cooldown {
         String parsed = StringReplacerApplier.replace(value, uuid, true);
         return Validate.getNumber(parsed).map(BigDecimal::doubleValue).map(d -> (long) (d * 1000)).map(Duration::ofMillis)
                 .orElseGet(() -> {
-                    Optional.ofNullable(Bukkit.getPlayer(uuid)).ifPresent(player -> MessageUtils.sendMessage(player, BetterGUI.getInstance().getMessageConfig().getInvalidNumber(parsed)));
+                    Optional.ofNullable(Bukkit.getPlayer(uuid)).ifPresent(player -> MessageUtils.sendMessage(player, BetterGUI.getInstance().get(MessageConfig.class).getInvalidNumber(parsed)));
                     return Duration.ZERO;
                 });
     }
